@@ -3,7 +3,7 @@ grammar com.atropos.Garfield with org.eclipse.xtext.common.Terminals
 generate garfield "http://www.atropos.com/Garfield"
 
 Model:
-	greetings+=Greeting*;
-	
-Greeting:
-	'Hello' name=ID '!';
+	entities+=Entity*;
+
+Entity:
+	'entity' name=ID;
