@@ -6,4 +6,4 @@ Model:
 	entities+=Entity*;
 
 Entity:
-	'entity' name=ID;
+	'entity' name=ID '{' '}';
