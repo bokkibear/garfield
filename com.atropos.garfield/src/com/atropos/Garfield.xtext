@@ -3,7 +3,21 @@ grammar com.atropos.Garfield with org.eclipse.xtext.common.Terminals
 generate garfield "http://www.atropos.com/Garfield"
 
 Model:
-	entities+=Entity*;
+	game = Game;
+
+GameSpecificDeclaration:
+	GameProperty | Entity;
+
+Game:
+	'game' name=ID '{'
+		declarations += GameSpecificDeclaration*
+	'}';
+
+GameProperty:
+	Credits;
+	
+Credits:
+	value=ID;
 
 Entity:
 	'entity' name=ID '{' '}';

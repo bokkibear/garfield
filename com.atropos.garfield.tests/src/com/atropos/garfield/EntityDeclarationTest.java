@@ -1,5 +1,7 @@
 package com.atropos.garfield;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.eclipse.xtext.junit4.AbstractXtextTests;
@@ -21,13 +23,17 @@ public class EntityDeclarationTest extends AbstractXtextTests {
 	@Test
 	public void testSingleEntityDeclaration() throws Exception {
 		
-		Model parsedModel = parser.parse("entity MyEntity {}");		
+		Model parsedModel = parser.parse("game MyGame { entity MyEntity {}}");		
 		assertNotNull(parsedModel);
-		assertEquals(1, parsedModel.getEntities().size());		
+	
+		List<Entity> gameEntities = Utilities.getEntitiesOf(parsedModel.getGame());
 		
-		Entity firstEntity = parsedModel.getEntities().get(0);		
+		assertEquals(1, gameEntities.size());		
+		
+		Entity firstEntity = gameEntities.get(0);		
 		assertEquals("MyEntity", firstEntity.getName());
 		
 	}
+	
 
 }

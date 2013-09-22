@@ -17,6 +17,7 @@ class GarfieldGenerator implements IGenerator {
 	
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
 			
+		//TODO - dependency injection to figure out which language we're using
 		val manager = new CodeGenerationManager(resource, fsa, new CeylonCodeGenerator());
 		manager.doCodeGeneration;
 

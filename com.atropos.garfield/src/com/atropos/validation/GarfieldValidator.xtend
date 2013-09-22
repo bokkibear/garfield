@@ -20,13 +20,16 @@ import org.eclipse.xtext.validation.Check
 	@Check
 	def checkEntityNameIsUnique(Entity entity) {
 		
-		val model = entity.eContainer as Model;
-								
-		for (Entity eachEntity : model.entities) {
-						
+		val model = entity.eContainer.eContainer as Model;
+		
+		val gameEntities = model.game.declarations.filter(typeof(Entity));
+		
+		for (Entity eachEntity : gameEntities) {
+							
 			if ( !eachEntity.equals(entity) && entity.name.equals(eachEntity.name) ) {
 				error("Entity names must be unique!", entity, GarfieldPackage::eINSTANCE.entity_Name);
 			}
+			
 		}
 	}
 		

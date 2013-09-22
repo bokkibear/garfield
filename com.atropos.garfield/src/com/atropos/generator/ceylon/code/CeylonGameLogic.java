@@ -10,16 +10,20 @@ public class CeylonGameLogic extends CeylonCodeFile {
 	private final String gameName;
 	private final String gameConfigClassname;
 	private final Set<String> supportedEntities = new HashSet<String>();
+	private final String gameInfoClassname;
 		
-	public CeylonGameLogic(String gameName, String gameConfigClassname) {		
+	public CeylonGameLogic(String gameName, String gameConfigClassname, String gameInfoClassname) {		
 		this.gameName = gameName;
-		this.gameConfigClassname = gameConfigClassname;		
+		this.gameConfigClassname = gameConfigClassname;
+		this.gameInfoClassname = gameInfoClassname;		
 	}
 
 	@Override
 	public String getCode() {
 		String code = "";
 		code += "shared class " + getClassname() + "(" + gameConfigClassname + " configuration) {\n";
+		
+		code += "   shared variable " + gameInfoClassname + " info = " + gameInfoClassname + "();\n";
 		
 		for (String entityName : supportedEntities) {
 			CeylonEntity entity = new CeylonEntity(entityName);			

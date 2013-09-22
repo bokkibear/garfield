@@ -8,10 +8,13 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.IFileSystemAccess;
 
+import com.atropos.garfield.Credits;
 import com.atropos.garfield.Entity;
+import com.atropos.garfield.Game;
 import com.atropos.generator.code.CodeFile;
 import com.atropos.generator.code.CodeUnit;
 import com.atropos.generator.code.EntityCodeUnit;
+import com.atropos.generator.code.GameInfoCodeUnit;
 import com.atropos.generator.code.GameLogicCodeUnit;
 
 public final class CodeGenerationManager {
@@ -29,14 +32,28 @@ public final class CodeGenerationManager {
 	public void doCodeGeneration() {
 				
 		Collection<EntityCodeUnit> entities = createEntitySpecs();		
-		GameLogicCodeUnit game = createGameCore();
 		
+		GameInfoCodeUnit gameInfo = createGameInfo();		
+		GameLogicCodeUnit game = createGameCore(gameInfo);
+		
+		writeCode(gameInfo);
 		writeCode(entities);
 		writeCode(game);
 	}
 	
-	private GameLogicCodeUnit createGameCore() {				
-		GameLogicCodeUnit gameLogic = codeGenerator.generateGameLogic("Dummy", "");
+	private GameInfoCodeUnit createGameInfo() {
+		Game game = getModelObject(Game.class);
+		Iterable<Credits> credits = getModelObjects(Credits.class);
+		GameInfoCodeUnit gameInfo = codeGenerator.generateGameInfo(game.getName(), credits);
+		
+		return gameInfo;
+	}
+	
+	private GameLogicCodeUnit createGameCore(GameInfoCodeUnit gameInfo) {				
+		
+		Game game = getModelObject(Game.class);
+		
+		GameLogicCodeUnit gameLogic = codeGenerator.generateGameLogic(game.getName(), gameInfo, "");
 		for (Entity entity : getModelEntities()) {							
 			gameLogic.addEntitySupport(entity.getName());			
 		}				
@@ -68,6 +85,18 @@ public final class CodeGenerationManager {
 	
 	private Iterable<Entity> getModelEntities() {
 		return getModelObjects(Entity.class);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <E extends EObject> E getModelObject(Class<E> modelClass) {
+		TreeIterator<EObject> allContents = resource.getAllContents();
+		while( allContents.hasNext()) {
+			EObject next = allContents.next();
+			if (modelClass.isAssignableFrom(next.getClass())) {
+				return (E)next;
+			}
+		}
+		throw new RuntimeException("No model object of class " + modelClass + " was found!");
 	}
 	
 	@SuppressWarnings("unchecked")
